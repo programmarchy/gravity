@@ -1,0 +1,6 @@
+[submodule "js/underscore"]
+	path = js/underscore
+	url = https://github.com/documentcloud/underscore.git
+[submodule "js/three.js"]
+	path = js/three.js
+	url = https://github.com/mrdoob/three.js.git

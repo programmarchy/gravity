@@ -49,10 +49,16 @@
       var world = new World();
       var gravity = new Gravity(world);
       world.addForce(gravity);
-      world.addBodies([
-        new Body(1.0, 100, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)),
-        new Body(0.1, 10, new THREE.Vector3(400, 0, 0), new THREE.Vector3(0, 7.5, 0))
-      ]);
+      var i = 0;
+      while (i++ < 10) {
+        var n = Math.random;
+        var m = function () { return Math.random() - 0.5 }
+        world.addBody(new Body
+          (1.0 * n(), // Radius
+           5.0 * n(), // Mass
+           new THREE.Vector3(500 * m(), 500 * m(), 500 * m())
+          ));
+      }
 
       function Body(mass, radius, position, velocity, id) {
         this.id = id || "Unknown";

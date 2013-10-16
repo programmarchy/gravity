@@ -52,12 +52,15 @@
       var i = 0;
       while (i++ < 10) {
         var n = Math.random;
-        var m = function () { return Math.random() - 0.5 }
+        var p = function () { return Math.random() - 0.5 }
+        var r = 5.0 * n();
+        var m = 1.0;
+        var l = 500;
+        var x = l * p(),
+            y = l * p(),
+            z = l * p();
         world.addBody(new Body
-          (1.0 * n(), // Radius
-           5.0 * n(), // Mass
-           new THREE.Vector3(500 * m(), 500 * m(), 500 * m())
-          ));
+          (r, m, new THREE.Vector3(x, y, z)));
       }
 
       function Body(mass, radius, position, velocity, id) {
@@ -290,7 +293,7 @@
           })();
 
           camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
-          camera.position.y = -1000;
+          //camera.position.y = -1000;
           camera.position.z = -2000;
 
           renderer = new THREE.WebGLRenderer();

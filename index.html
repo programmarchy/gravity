@@ -43,7 +43,7 @@
     <script type="text/javascript">
 
       var container, stats;
-      var clock, camera, scene, renderer, controls;
+      var clock, camera, scene, renderer, controls, cursor;
       var effects = [];
 
       var world = new World();
@@ -62,6 +62,9 @@
         world.addBody(new Body
           (r, m, new THREE.Vector3(x, y, z)));
       }
+
+      cursor = new Body(5.0, 10, new THREE.Vector3(0, 0, 0));
+      world.addBody(cursor);
 
       function Body(mass, radius, position, velocity, id) {
         this.id = id || "Unknown";
@@ -161,6 +164,7 @@
         function integrate(t, dt) {
           var bodies = world.bodies;
           _(bodies).each(function(body) {
+            if (body === cursor) return;
             var a = evaluate(body, t, 0.0, new Derivative());
             var b = evaluate(body, t, 0.5 * dt, a);
             var c = evaluate(body, t, 0.5 * dt, b);
@@ -237,7 +241,7 @@
 
           _(world.bodies).each(function(body) {
             var geometry = new THREE.SphereGeometry(body.radius, 16, 16);
-            var material = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+            var material = new THREE.MeshBasicMaterial({ color: body === cursor ? 0x00cc00 : 0xcccccc });
             var mesh = new THREE.Mesh(geometry, material);
             mesh.position = body.state.position;
             body.mesh = mesh;
@@ -293,7 +297,6 @@
           })();
 
           camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
-          //camera.position.y = -1000;
           camera.position.z = -2000;
 
           renderer = new THREE.WebGLRenderer();
@@ -302,6 +305,9 @@
           container.appendChild(renderer.domElement);
 
           controls = new THREE.TrackballControls(camera, renderer.domElement);
+
+          document.addEventListener('mousemove', onMouseMove, false);
+          window.addEventListener('resize', onWindowResize);
 
           initialized = true;
 
@@ -340,6 +346,7 @@
         var w = window.innerWidth
         var h = window.innerHeight;
 
+        camera.aspect = w / h;
         camera.left = -w / 2;
         camera.right = w / 2;
         camera.top = h / 2;
@@ -350,6 +357,16 @@
         controls.handleResize();
         render();
 
+      }
+
+      function onMouseMove(e) {
+        var w = window.innerWidth
+        var h = window.innerHeight;
+        var x = -event.clientX + w / 2;
+        var y = -event.clientY + h / 2;
+        var z = 0;
+        cursor.state.position = new THREE.Vector3(x, y, z);
+        cursor.mesh.position = cursor.state.position;
       }
 
     </script>
